@@ -16,26 +16,16 @@ public abstract class GameBeta extends Game
     }
     
     public abstract void initialize();
-    
-    // Gameloop stages:
-    // (1) process input
-    // (2) update state of game world
-    // (3) render the graphics
+
     public void render() 
     {
         float dt = Gdx.graphics.getDeltaTime();
-        
-        // act method
         mainStage.act(dt);
-        
-        // defined by user
         update(dt);
-        
-        // clear the screen
+
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
-        // draw the graphics
         mainStage.draw();
     }
     
