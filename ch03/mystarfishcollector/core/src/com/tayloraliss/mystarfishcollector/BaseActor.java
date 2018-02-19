@@ -1,9 +1,14 @@
 package com.tayloraliss.mystarfishcollector;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 
 public class BaseActor extends Actor
 {
@@ -30,5 +35,107 @@ public class BaseActor extends Actor
         float h = tr.getRegionHeight();
         setSize(w, h);
         setOrigin(w/2, h/2);
+    }
+
+    public void setAnimationPaused(boolean pause){
+        animationPaused = pause;
+    }
+
+    public void act(float dt){
+        super.act(dt);
+
+        if (!animationPaused){
+            elapsedTime += dt;
+        }
+    }
+
+    public void draw(Batch batch, float parentAlpha){
+        super.draw(batch, parentAlpha);
+
+        // apply color tint effect
+        Color c = getColor();
+        batch.setColor(c.r, c.g, c.b, c.a);
+
+        if (animation != null && isVisible()) {
+            batch.draw(animation.getKeyFrame(elapsedTime),
+                    getX(), getY(), getOriginX(), getOriginY(),
+                    getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation()
+            );
+        }
+    }
+
+    //For creating an animation from separate images
+    public Animation<TextureRegion> loadAnimationFromFiles(String[] fileNames,
+                                                           float frameDuration,
+                                                           boolean loop)
+    {
+        int fileCount = fileNames.length;
+        Array<TextureRegion> textureArray = new Array<TextureRegion>();
+
+        for (int n=0; n < fileCount; n++){
+            String fileName = fileNames[n];
+            Texture texture = new Texture(Gdx.files.internal(fileName));
+            texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            textureArray.add(new TextureRegion(texture));
+        }
+
+        Animation<TextureRegion> anim = new Animation<TextureRegion>(frameDuration, textureArray);
+
+        if (loop){
+            anim.setPlayMode(Animation.PlayMode.LOOP);
+        } else {
+            anim.setPlayMode(Animation.PlayMode.NORMAL);
+        }
+
+        if (animation == null){
+            setAnimation(anim);
+        }
+
+        return anim;
+    }
+
+    // For creating an animation from a single spritesheet
+    public Animation<TextureRegion> loadAnimationFromSheet(String fileName, int rows, int cols,
+                                                           float frameDuration, boolean loop){
+        Texture texture = new Texture(Gdx.files.internal(fileName), true);
+        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        int frameWidth = texture.getWidth() / cols;
+        int frameHeight = texture.getHeight() / rows;
+
+        TextureRegion[][] temp = TextureRegion.split(texture, frameWidth, frameHeight);
+
+        Array<TextureRegion> textureArray = new Array <TextureRegion>();
+
+        for (int r = 0; r < rows; r++){
+            for (int c=0; c < cols; c++){
+                textureArray.add(temp[r][c]);
+            }
+        }
+
+        Animation<TextureRegion> anim = new Animation<TextureRegion>(frameDuration, textureArray);
+
+        if (loop){
+            anim.setPlayMode(Animation.PlayMode.LOOP);
+        } else {
+            anim.setPlayMode(Animation.PlayMode.NORMAL);
+        }
+
+        if (animation == null){
+            setAnimation(anim);
+        }
+
+        return anim;
+    }
+
+    //For game objects represented by a single image that do not require animation
+    public Animation<TextureRegion> loadTexture(String fileName){
+        String[] fileNames = new String[1];
+        fileNames[0] = fileName;
+        return loadAnimationFromFiles(fileNames, 1, true);
+    }
+
+    //Check if animation is finished
+    public boolean isAnimationFinished(){
+        return animation.isAnimationFinished(elapsedTime);
     }
 }
