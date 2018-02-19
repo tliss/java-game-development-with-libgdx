@@ -36,18 +36,21 @@ public class StarfishGame extends GameBeta
 
 		shark = new Shark();
 		shark.setTexture( new Texture(Gdx.files.internal("sharky.png")) );
-		shark.setPosition(Gdx.graphics.getWidth() / 2 - shark.getWidth() / 2,  Gdx.graphics.getHeight() / 2 - shark.getHeight() / 2);
+		shark.setPosition(Gdx.graphics.getWidth() / 2 - shark.getWidth() / 2,
+                Gdx.graphics.getHeight() / 2 - shark.getHeight() / 2);
 		mainStage.addActor( shark );
 
 		winMessage = new ActorBeta();
 		winMessage.setTexture( new Texture(Gdx.files.internal("you-win.png")) );
-		winMessage.setPosition( 180,180 );
+		winMessage.setPosition(Gdx.graphics.getWidth()/2 - winMessage.getWidth()/2,
+                Gdx.graphics.getHeight()/2 - winMessage.getHeight()/2);
 		winMessage.setVisible( false );
 		mainStage.addActor( winMessage );
 
 		gameOverMessage = new ActorBeta();
 		gameOverMessage.setTexture( new Texture(Gdx.files.internal("game-over.png")) );
-		gameOverMessage.setPosition(180, 180);
+		gameOverMessage.setPosition(Gdx.graphics.getWidth()/2 - gameOverMessage.getWidth()/2,
+                Gdx.graphics.getHeight()/2 - gameOverMessage.getHeight()/2);
 		gameOverMessage.setVisible( false );
 		mainStage.addActor( gameOverMessage );
 
