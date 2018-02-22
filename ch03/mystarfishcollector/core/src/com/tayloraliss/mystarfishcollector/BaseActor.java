@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
@@ -15,6 +16,7 @@ public class BaseActor extends Actor
     private Animation<TextureRegion> animation;
     private float elapsedTime;
     private boolean animationPaused;
+    private Vector2 velocityVec;
 
     public BaseActor(float x, float y, Stage s)
     {
@@ -23,9 +25,10 @@ public class BaseActor extends Actor
         // perform additional initialization tasks
         setPosition(x,y);
         s.addActor(this);
-        animation=null;
-        elapsedTime=0;
-        animationPaused=false;
+        animation = null;
+        elapsedTime = 0;
+        animationPaused = false;
+        velocityVec = new Vector2(0,0);
     }
 
     public void setAnimation(Animation<TextureRegion> anim){
@@ -137,5 +140,30 @@ public class BaseActor extends Actor
     //Check if animation is finished
     public boolean isAnimationFinished(){
         return animation.isAnimationFinished(elapsedTime);
+    }
+
+    public void setSpeed(float speed){
+        // if length is zero, then assume motion angle is zero degrees
+        if (velocityVec.len() == 0){
+            velocityVec.set(speed, 0);
+        } else {
+            velocityVec.setLength(speed);
+        }
+    }
+
+    public float getSpeed(){
+        return velocityVec.len();
+    }
+
+    public void setMotionAngle(float angle){
+        velocityVec.setAngle(angle);
+    }
+
+    public float getMotionAngle(){
+        return velocityVec.angle();
+    }
+
+    public boolean isMoving(){
+        return (getSpeed() > 0);
     }
 }
