@@ -17,6 +17,10 @@ public class BaseActor extends Actor
     private float elapsedTime;
     private boolean animationPaused;
     private Vector2 velocityVec;
+    private Vector2 accelerationVec;
+    private float acceleration;
+    private float maxSpeed;
+    private float deceleration;
 
     public BaseActor(float x, float y, Stage s)
     {
@@ -29,6 +33,10 @@ public class BaseActor extends Actor
         elapsedTime = 0;
         animationPaused = false;
         velocityVec = new Vector2(0,0);
+        accelerationVec = new Vector2(0, 0);
+        acceleration = 0;
+        maxSpeed = 1000;
+        deceleration = 0;
     }
 
     public void setAnimation(Animation<TextureRegion> anim){
@@ -166,4 +174,25 @@ public class BaseActor extends Actor
     public boolean isMoving(){
         return (getSpeed() > 0);
     }
+
+    public void setAcceleration(float acc){
+        acceleration = acc;
+    }
+
+    public void accelerateAtAngle(float angle){
+        accelerationVec.add(new Vector2(acceleration, 0).setAngle(angle));
+    }
+
+    public void accelerateForward(){
+        accelerateAtAngle(getRotation());
+    }
+
+    public void setMaxSpeed(float ms){
+        maxSpeed = ms;
+    }
+
+    public void setDeceleration(float dec){
+        deceleration = dec;
+    }
+
 }
