@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -193,6 +194,30 @@ public class BaseActor extends Actor
 
     public void setDeceleration(float dec){
         deceleration = dec;
+    }
+
+    public void applyPhysics(float dt){
+        // apply acceleration
+        velocityVec.add(accelerationVec.x * dt, accelerationVec.y * dt);
+
+        float speed = getSpeed();
+
+        // decrease speed (decelerate) when not accelerating
+        if (accelerationVec.len() == 0){
+            speed -= deceleration * dt;
+        }
+
+        // keep speed within set bounds
+        speed = MathUtils.clamp(speed, 0, maxSpeed);
+
+        // update velocity
+        setSpeed(speed);
+
+        // apply velocity
+        moveBy(velocityVec.x * dt, velocityVec.y * dt);
+
+        // reset acceleration
+        accelerationVec.set(0,0);
     }
 
 }
