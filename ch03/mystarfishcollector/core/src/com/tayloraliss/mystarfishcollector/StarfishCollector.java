@@ -6,6 +6,7 @@ public class StarfishCollector extends GameBeta {
     private Turtle turtle;
     private Starfish starfish;
     private BaseActor ocean;
+    private Rock rock;
 
     public void initialize() {
         ocean = new BaseActor(0, 0, mainStage);
@@ -14,9 +15,12 @@ public class StarfishCollector extends GameBeta {
 
         starfish = new Starfish(380, 380, mainStage);
         turtle = new Turtle(20, 20, mainStage);
+        rock = new Rock(200, 200, mainStage);
     }
 
     public void update(float dt) {
+        turtle.preventOverlap(rock);
+
         if (turtle.overlaps(starfish) && !starfish.isCollected()){
             starfish.collect();
 
